@@ -104,3 +104,96 @@ variable "db_instance_class" {
   type        = string
   default     = "db.t3.micro"
 }
+
+# ─── Variables referenced by logging.tf ──────────────────────────────────────
+
+variable "application_log_retention_days" {
+  description = "Retention period for application (ECS) CloudWatch log groups."
+  type        = number
+  default     = 90
+}
+
+variable "audit_log_retention_days" {
+  description = "Retention period for audit and RDS CloudWatch log groups."
+  type        = number
+  default     = 365
+}
+
+variable "log_alert_emails" {
+  description = "Email recipients for application logging alerts (error bursts)."
+  type        = set(string)
+  default     = []
+}
+
+variable "error_alarm_threshold" {
+  description = "Number of ERROR-level log events in 5 minutes that triggers an alarm."
+  type        = number
+  default     = 10
+}
+
+# ─── Variables referenced by backup-verification.tf ──────────────────────────
+
+variable "pagerduty_integration_key" {
+  description = "PagerDuty Events API v2 integration key. When empty, PagerDuty subscriptions are skipped."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "backup_restore_test_class" {
+  description = "RDS instance class used for the temporary restore-test instance."
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "backup_verify_alert_emails" {
+  description = "Email recipients for backup restore verification alerts."
+  type        = set(string)
+  default     = []
+}
+
+# ─── Variables for CloudWatch production alarms (#1094) ──────────────────────
+
+variable "alarm_cpu_threshold_pct" {
+  description = "ECS service CPU utilization percentage that triggers an alarm."
+  type        = number
+  default     = 80
+}
+
+variable "alarm_rds_cpu_threshold_pct" {
+  description = "RDS CPU utilization percentage that triggers an alarm."
+  type        = number
+  default     = 70
+}
+
+variable "alarm_rds_storage_free_gb" {
+  description = "RDS free storage in GB below which an alarm fires."
+  type        = number
+  default     = 4
+}
+
+variable "alarm_alb_5xx_rate_pct" {
+  description = "ALB 5xx response rate percentage that triggers an alarm."
+  type        = number
+  default     = 1
+}
+
+variable "alarm_indexer_lag_ledgers" {
+  description = "Indexer lag in ledgers above which an alarm fires."
+  type        = number
+  default     = 100
+}
+
+# ─── CloudFront variables (#1092) ────────────────────────────────────────────
+
+variable "cloudfront_price_class" {
+  description = "CloudFront price class: PriceClass_100 (NA+EU), PriceClass_200 (+Asia), PriceClass_All."
+  type        = string
+  default     = "PriceClass_100"
+}
+
+variable "cloudfront_acm_certificate_arn" {
+  description = "ACM certificate ARN in us-east-1 for the CloudFront custom domain. Must be in us-east-1."
+  type        = string
+  default     = ""
+}
